@@ -117,15 +117,15 @@ function Footer() {
             <ul className="space-y-3">
               <li className="flex justify-between items-center">
                 <span className="text-gray-300">Monday - Friday</span>
-                <span className="text-white font-semibold">10:00 - 22:00</span>
+                <span className="text-white font-semibold">08:00 - 22:00</span>
               </li>
               <li className="flex justify-between items-center">
                 <span className="text-gray-300">Saturday</span>
-                <span className="text-white font-semibold">11:00 - 23:00</span>
+                <span className="text-white font-semibold">08:00 - 22:00</span>
               </li>
               <li className="flex justify-between items-center">
                 <span className="text-gray-300">Sunday</span>
-                <span className="text-white font-semibold">12:00 - 21:00</span>
+                <span className="text-white font-semibold">08:00 - 22:00</span>
               </li>
             </ul>
             <div className="mt-6 p-4 bg-red-600/20 rounded-lg border border-red-500/30">
