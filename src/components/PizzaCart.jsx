@@ -1,218 +1,127 @@
-import React, { useState } from "react";
+import React from 'react';
+import { useCart } from '../context/CartContext';
 
-const pizzas = [
-  { 
-    id: 1, 
-    name: "Margherita", 
-    price: 8.99, 
-    image: "https://cookieandkate.com/images/2021/07/classic-margherita-pizza-548x824.jpg" 
-  },
-  { 
-    id: 2, 
-    name: "Pepperoni", 
-    price: 10.49, 
-    image: "https://tse4.mm.bing.net/th/id/OIP._Tuj6ElUF8jhhcSg41_V_QHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" 
-  },
-  { 
-    id: 3, 
-    name: "Veggie", 
-    price: 9.25, 
-    image: "https://www.twopeasandtheirpod.com/wp-content/uploads/2021/03/Veggie-Pizza-7-1025x1536.jpg" 
-  },
-];
+function PizzaCart() {
+  const { items, showCart, setShowCart, increaseQuantity, decreaseQuantity, removeAllOfItem, total, itemCount } = useCart();
 
-export default function PizzaCart() {
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-
-  const addToCart = (pizza) => {
-    setCart([...cart, pizza]);
-  };
-
-  const removeFromCart = (index) => {
-    const updatedCart = cart.filter((_, i) => i !== index);
-    setCart(updatedCart);
-  };
-
-  const total = cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
+  if (!showCart) return null;
 
   return (
-    <div style={styles.page}>
-      {/* Pizza Menu */}
-      <div style={styles.container}>
-        <h1 style={styles.title}>🍕 Pizza Menu</h1>
-        <div style={styles.pizzaList}>
-          {pizzas.map((pizza) => (
-            <div key={pizza.id} style={styles.pizzaItem}>
-              <img src={pizza.image} alt={pizza.name} style={styles.image} />
-              <div style={styles.info}>
-                <span style={styles.pizzaName}>
-                  {pizza.name} - ${pizza.price}
-                </span>
-                <button onClick={() => addToCart(pizza)} style={styles.button}>
-                  Add to Cart
-                </button>
+    <>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"
+        onClick={() => setShowCart(false)}
+      >
+        {/* Cart Modal */}
+        <div 
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all border border-gray-200"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-red-600 to-red-700 rounded-t-2xl">
+            <h2 className="text-3xl font-bold text-white">🛒 Your Cart</h2>
+            <button 
+              onClick={() => setShowCart(false)}
+              className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all text-2xl w-10 h-10 flex items-center justify-center"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Cart Items */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {items.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🛒</div>
+                <p className="text-gray-600 text-xl mb-2">Your cart is empty</p>
+                <p className="text-gray-400">Add some delicious items to get started!</p>
               </div>
+            ) : (
+              <div className="space-y-4">
+                {items.map((item) => (
+                  <div 
+                    key={item.id} 
+                    className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow border border-gray-200"
+                  >
+                    <div className="flex gap-4">
+                      {/* Item Image */}
+                      <img 
+                        src={item.image} 
+                        alt={item.name}
+                        className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                      />
+                      
+                      {/* Item Details */}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <h4 className="font-bold text-gray-900 text-lg mb-1">{item.name}</h4>
+                          <p className="text-gray-600 text-sm mb-2">{item.description}</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-3">
+                            <button 
+                              onClick={() => decreaseQuantity(item.id)}
+                              className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors"
+                            >
+                              −
+                            </button>
+                            <span className="font-bold text-gray-800 w-8 text-center">{item.quantity}</span>
+                            <button 
+                              onClick={() => increaseQuantity(item.id)}
+                              className="bg-green-500 hover:bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold transition-colors"
+                            >
+                              +
+                            </button>
+                          </div>
+                          
+                          <div className="text-right">
+                            <p className="text-sm text-gray-500">${item.price} each</p>
+                            <p className="text-lg font-bold text-red-600">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <button 
+                          onClick={() => removeAllOfItem(item.id)}
+                          className="text-red-500 hover:text-red-700 text-sm mt-2 self-start transition-colors"
+                        >
+                          Remove all
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Footer with Total */}
+          {items.length > 0 && (
+            <div className="border-t bg-gray-50 rounded-b-2xl p-6">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Total items</p>
+                  <p className="text-2xl font-bold text-gray-900">{itemCount} {itemCount === 1 ? 'item' : 'items'}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-gray-600 text-sm">Total amount</p>
+                  <p className="text-3xl font-bold text-red-600">${total}</p>
+                </div>
+              </div>
+              <button 
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-lg"
+              >
+                Proceed to Checkout
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </div>
-
-      {/* Cart Button */}
-      <button style={styles.cartButton} onClick={() => setShowCart(true)}>
-        🛒 View Cart ({cart.length})
-      </button>
-
-      {/* Cart Sidebar */}
-      <div style={{ 
-        ...styles.cartSidebar, 
-        right: showCart ? "0" : "-350px"  // slide effect
-      }}>
-        <h2 style={styles.cartTitle}>🛒 Your Cart</h2>
-        <button style={styles.closeButton} onClick={() => setShowCart(false)}>
-          ❌ Close
-        </button>
-
-        {cart.length === 0 ? (
-          <p>Your cart is empty.</p>
-        ) : (
-          <ul style={styles.cartList}>
-            {cart.map((item, index) => (
-              <li key={index} style={styles.cartItem}>
-                {item.name} - ${item.price}
-                <button 
-                  onClick={() => removeFromCart(index)} 
-                  style={styles.removeButton}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <h3>Total: ${total}</h3>
-      </div>
-    </div>
+    </>
   );
 }
 
-const styles = {
-  page: {
-    position: "relative",
-    minHeight: "100vh",
-    backgroundColor: "#f0f0f0",
-    fontFamily: "Arial, sans-serif",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "20px",
-  },
-  container: {
-    maxWidth: "600px",
-    width: "100%",
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    padding: "20px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-  pizzaList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-  },
-  pizzaItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "15px",
-    padding: "10px",
-    backgroundColor: "#fafafa",
-    borderRadius: "8px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-  },
-  image: {
-    width: "100px",
-    height: "100px",
-    objectFit: "cover",
-    borderRadius: "8px",
-  },
-  info: {
-    display: "flex",
-    flexDirection: "column",
-    flex: 1,
-  },
-  pizzaName: {
-    fontWeight: "bold",
-    marginBottom: "8px",
-  },
-  button: {
-    padding: "6px 12px",
-    backgroundColor: "#ff6347",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    alignSelf: "flex-start",
-  },
-  cartButton: {
-    marginTop: "20px",
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: "bold",
-  },
-  cartSidebar: {
-    position: "fixed",
-    top: "0",
-    right: "-350px",
-    width: "350px",
-    height: "100%",
-    backgroundColor: "#fff",
-    boxShadow: "-2px 0 10px rgba(0,0,0,0.3)",
-    padding: "20px",
-    transition: "right 0.3s ease-in-out",
-    zIndex: 1000,
-  },
-  cartTitle: {
-    marginBottom: "15px",
-  },
-  closeButton: {
-    background: "transparent",
-    border: "none",
-    fontSize: "16px",
-    cursor: "pointer",
-    marginBottom: "10px",
-  },
-  cartList: {
-    listStyle: "none",
-    padding: 0,
-    margin: "10px 0",
-  },
-  cartItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f8f8f8",
-    padding: "8px 12px",
-    marginBottom: "8px",
-    borderRadius: "6px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-  },
-  removeButton: {
-    backgroundColor: "#dc3545",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    padding: "4px 8px",
-    cursor: "pointer",
-    fontSize: "12px",
-  },
-};
+export default PizzaCart;
