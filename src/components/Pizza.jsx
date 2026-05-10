@@ -1,18 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
 import { pizzas } from '../constants/pizzas';
 import PizzaCard from './PizzaCard';
 import { useCart } from '../context/CartContext';
 
-function Pizza({ onNavigate }) {
+function Pizza() {
+  const navigate = useNavigate();
   const { addToCart, itemCount, setShowCart } = useCart();
 
   return (
     <div className="w-full">
       {/* Header */}
-      <header className="w-full bg-black shadow-lg py-6 px-4 md:px-8 lg:px-12 sticky top-0 z-40">
+      <header className="w-full bg-red-950/90 border-b border-red-900/40 shadow-lg backdrop-blur-sm py-6 px-4 md:px-8 lg:px-12 sticky top-0 z-40">
         <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <button onClick={() => onNavigate('home')} className="text-left">
+            <button onClick={() => navigate('/')} className="text-left">
               <h1 className="text-2xl md:text-3xl font-bold text-white hover:text-red-500 transition-colors">🍕 Pizza Nairobi</h1>
               <p className="text-white text-sm md:text-lg hidden md:block">Delicious Pizzas, Delivered Fast</p>
             </button>
@@ -20,19 +23,19 @@ function Pizza({ onNavigate }) {
             {/* Navigation Links */}
             <nav className="hidden md:flex items-center gap-6">
               <button
-                onClick={() => onNavigate('home')}
+                onClick={() => navigate('/')}
                 className="text-gray-300 hover:text-red-500 font-semibold transition-colors duration-200 px-3 py-2 hover:border-b-2 border-red-600"
               >
                 Home
               </button>
               <button
-                onClick={() => onNavigate('menu')}
+                onClick={() => navigate('/menu')}
                 className="text-white hover:text-red-500 font-semibold transition-colors duration-200 px-3 py-2 border-b-2 border-red-600"
               >
                 Menu
               </button>
               <button
-                onClick={() => onNavigate('about')}
+                onClick={() => navigate('/about')}
                 className="text-gray-300 hover:text-red-500 font-semibold transition-colors duration-200 px-3 py-2 hover:border-b-2 border-red-600"
               >
                 About Us
@@ -40,28 +43,38 @@ function Pizza({ onNavigate }) {
             </nav>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Mobile Navigation */}
             <nav className="md:hidden flex items-center gap-3">
               <button
-                onClick={() => onNavigate('home')}
+                onClick={() => navigate('/')}
                 className="text-gray-300 hover:text-red-500 font-semibold text-sm transition-colors"
               >
                 Home
               </button>
               <button
-                onClick={() => onNavigate('menu')}
+                onClick={() => navigate('/menu')}
                 className="text-white hover:text-red-500 font-semibold text-sm transition-colors"
               >
                 Menu
               </button>
               <button
-                onClick={() => onNavigate('about')}
+                onClick={() => navigate('/about')}
                 className="text-gray-300 hover:text-red-500 font-semibold text-sm transition-colors"
               >
                 About
               </button>
             </nav>
+
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              aria-label="Sign in"
+              title="Sign in"
+              className="shrink-0 rounded-full p-1.5 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <FaUserCircle className="text-[1.35rem] sm:text-xl" aria-hidden />
+            </button>
             
             {/* Cart Icon with Count */}
             <button

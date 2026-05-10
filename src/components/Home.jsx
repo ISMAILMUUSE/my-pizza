@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FaPizzaSlice, FaChevronDown, FaFire } from 'react-icons/fa';
+import { FaPizzaSlice, FaChevronDown, FaFire, FaUserCircle } from 'react-icons/fa';
 
-function Home({ onNavigate }) {
+function Home() {
+  const navigate = useNavigate();
   const { itemCount, setShowCart } = useCart();
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -16,7 +18,7 @@ function Home({ onNavigate }) {
   }, []);
 
   const handleExploreMenu = () => {
-    onNavigate('menu');
+    navigate('/menu');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -30,7 +32,7 @@ function Home({ onNavigate }) {
       </div>
 
       {/* Header */}
-      <header className="w-full bg-black/50 backdrop-blur-md shadow-lg py-4 px-4 md:px-8 lg:px-12 sticky top-0 z-50 transition-all duration-300">
+      <header className="w-full bg-red-950/55 backdrop-blur-md shadow-lg border-b border-red-900/40 py-4 px-4 md:px-8 lg:px-12 sticky top-0 z-50 transition-all duration-300">
         <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -40,7 +42,7 @@ function Home({ onNavigate }) {
             <p className="text-white/80 text-sm hidden md:block">Delicious Pizzas, Delivered Fast</p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <nav className="hidden md:flex items-center gap-4">
               <button
                 onClick={handleExploreMenu}
@@ -49,12 +51,22 @@ function Home({ onNavigate }) {
                 Menu
               </button>
               <button
-                onClick={() => onNavigate('about')}
+                onClick={() => navigate('/about')}
                 className="text-gray-300 hover:text-red-400 font-semibold transition-all duration-200 px-4 py-2 hover:scale-110"
               >
                 About Us
               </button>
             </nav>
+
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              aria-label="Sign in"
+              title="Sign in"
+              className="shrink-0 rounded-full p-1.5 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <FaUserCircle className="text-[1.35rem] sm:text-xl" aria-hidden />
+            </button>
             
             <button
               onClick={() => setShowCart(true)}
@@ -109,7 +121,7 @@ function Home({ onNavigate }) {
               </button>
               
               <button
-                onClick={() => onNavigate('about')}
+                onClick={() => navigate('/about')}
                 className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-bold py-4 px-8 rounded-full text-lg border-2 border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-105"
               >
                 Learn More
